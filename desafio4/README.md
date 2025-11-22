@@ -64,23 +64,24 @@ Cada microsserviço roda em um **container Docker separado**, com seu próprio D
 
 
                +---------------------------+
-               |        Host (PC)         |
+               |        Host (PC)          |
                |                           |
- Navegador /   |  http://localhost:5003   --> service-a (/users)
- curl          |  http://localhost:5002   --> service-b (/report)
+               |  http://localhost:5003   --> service-a (/users)
+               |  http://localhost:5002   --> service-b (/report)
                +---------------------------+
 
                  (rede Docker: desafio4-net)
                           |
           +---------------+---------------+
           |                               |
-   +-------------+                 +-------------+
-   |  service-a  |  <--- HTTP ---  |  service-b  |
-   | Flask /users|                 | Flask/report|
-   +-------------+                 +-------------+
+     +-------------+                 +-------------+
+     |  service-a  |  <--- HTTP ---  |  service-b  |
+     | Flask /users|                 | Flask/report|
+     +-------------+                 +-------------+
 
 ## Estrutura de Pastas
-    desafio4/
+```
+desafio4/
 ├── service-a/
 │   ├── app.py
 │   ├── requirements.txt
@@ -89,6 +90,7 @@ Cada microsserviço roda em um **container Docker separado**, com seu próprio D
 │   ├── app.py
 │   ├── requirements.txt
 │   └── Dockerfile
+```
 
 ## Execução Rápida (Automatizada)
 
@@ -177,15 +179,10 @@ Expect JSON with `source`, `total_users` and an array of `messages` with sentenc
 
 # Prints
 
-![Descrição da imagem](./docker-ps.jpeg)
+![Descrição da imagem](./print1-desafio4.png)
+![Descrição da imagem](./print2-desafio4.png)
+![Descrição da imagem](./print3-desafio4.png)
 
 
-![Descrição da imagem](./curlservice-a.jpeg)
 
-![Descrição da imagem](./curlservice-b.jpeg)
 
-## Checklist para avaliação
-- ✅ Código funcionando: `Dockerfile` dos serviços e caixa de testes
-- ✅ README com scripts: `setup.sh`, `run.sh`, `test.sh`, `simulate_failure.sh`, `cleanup.sh`
-- ✅ Testes e simulação de falha incluídos (`bash simulate_failure.sh`)
-- ✅ Troubleshooting incluído para erros comuns (rede, ports)
