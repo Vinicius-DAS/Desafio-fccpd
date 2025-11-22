@@ -1,0 +1,3 @@
+NAMES             STATUS         PORTS
+desafio1-client   Up 3 seconds   
+desafio1-web      Up 5 seconds   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp

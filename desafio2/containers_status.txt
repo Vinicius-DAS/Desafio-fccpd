@@ -1,0 +1,5 @@
+NAMES            STATUS          PORTS
+desafio2-db      Up 5 seconds    0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+desafio3-web     Up 11 minutes   0.0.0.0:8000->5000/tcp, [::]:8000->5000/tcp
+desafio3-db      Up 11 minutes   5432/tcp
+desafio3-cache   Up 11 minutes   6379/tcp
