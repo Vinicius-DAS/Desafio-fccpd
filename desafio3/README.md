@@ -54,16 +54,19 @@ A aplicação web se comunica com o banco e com o cache via rede interna criada 
 
 ## Estrutura do Projeto
 
+```
 desafio3/
 ├── docker-compose.yml
-├── setup.sh        # Inicia a stack com Docker Compose
-├── test.sh         # Testa endpoints da aplicação
-├── reset-db.sh     # Remove volume e recria database limpo
-├── cleanup.sh      # Para e remove os serviços
+├── setup.sh          # Inicia a stack com Docker Compose
+├── test.sh           # Testa endpoints da aplicação
+├── reset-db.sh       # Remove volume e recria o banco limpo
+├── cleanup.sh        # Para e remove os serviços
 └── web/
-  ├── Dockerfile
-  ├── requirements.txt
-  └── app.py
+    ├── Dockerfile
+    ├── requirements.txt
+    └── app.py
+```
+
 
 ## Execução Rápida (Automática)
 
@@ -113,27 +116,8 @@ desafio3/
 
     #Prints
 
-![Descrição da imagem](./ping%20web.jpeg)
-
-Prova que o serviço web consegue resolver o hostname db na rede interna e se comunicar com o Postgres.
-
-![Descrição da imagem](./ping%20cache.jpeg)
-
-Prova que o web também fala com o Redis (cache) na mesma rede.
-
-![Descrição da imagem](./curl.jpeg)
-
-Prova que o endpoint da aplicação está funcionando e que:
-
-    db_status = "ok" → comunicação com o Postgres
-
-    redis_status = "ok" → comunicação com o Redis
-
-    total_registros_db e visitas_redis estão sendo atualizados
-
-![Descrição da imagem](./compose.jpeg)
-
-isso evidencia o Compose orquestrando os 3 serviços.
+![Descrição da imagem](./print1-desafio3.png)
+![Descrição da imagem](./print2-desafio3.png)
 
 ## Checklist para avaliação
 - ✅ Código funcionando: `docker-compose.yml` e `web/Dockerfile` prontos
@@ -170,4 +154,5 @@ docker compose exec web bash -c "psql -h db -U usuario -d desafio3db -c '\dt'" |
 
 - Docker Compose cria redes por padrão, portanto os serviços se comunicam por hostname.
 - Volumes persistem dados do Postgres enquanto existir o volume `db-data`.
+
 - Use `docker compose down -v` para remover volumes com cuidado.
