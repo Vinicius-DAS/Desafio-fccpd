@@ -57,8 +57,8 @@ A ideia é:
                         +------------------------------+
                         |            Host              |
                         |                              |
-psql / cliente externo  |   localhost:5432             |
-----------------------> |   (porta mapeada)            |
+                        |   localhost:5432             |
+                        |   (porta mapeada)            |
                         +---------------|--------------+
                                         |
                        -p 5432:5432     |
@@ -204,29 +204,7 @@ chmod +x setup.sh demo.sh persist.sh cleanup.sh
 - Facilitar backup e migração de dados
 
 ## Prints
-![Descrição da imagem](./criação%20do%20bd.jpeg)
-
-nessa imagem de cima eu crio o banco de dados
-
-
-![Descrição da imagem](./remoção%20do%20container.jpeg)
-
-removo o container para provar a persistencia
-
-
-![Descrição da imagem](./container%20sumiu.jpeg)
-
-confiro se ele realmente foi removido
-
-
-![Descrição da imagem](./volume%20é%20o%20mesmo.jpeg)
-
-
-Mostro que houve persistencia uma vez que com a remoção, os dados continuaram e nao foram excluidos
-
-## Checklist para avaliação
-- ✅ Código funcionando: instruções de `docker run`, `docker volume` e uso de `postgres:16` corretos
-- ✅ README com scripts: `setup.sh`, `demo.sh`, `persist.sh`, `cleanup.sh`
-- ✅ Prova de persistência com prints e instruções passo a passo
-- ✅ Troubleshooting incluído para problemas comuns (porta, volume, permissões)
-
+![Descrição da imagem](./print1-desafio2.png)
+![Descrição da imagem](./print2-desafio2.png)
+![Descrição da imagem](./print3-desafio2.png)
+![Descrição da imagem](./print4-desafio2.png)
