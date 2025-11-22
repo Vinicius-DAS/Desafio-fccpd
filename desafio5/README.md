@@ -116,10 +116,7 @@ Expect the original raw JSON returned by each service.
 
 # Prints
 
-![Descrição da imagem](./desafio5.jpeg)
-
-## Checklist para avaliação
-- ✅ Código funcionando via `docker-compose.yml`
-- ✅ README com instruções e scripts: `setup.sh`, `test.sh`, `simulate_gateway_failure.sh`, `cleanup.sh`
-- ✅ Testes de gateway e simulação de falha inclusos
-- ✅ Troubleshooting e explicação de roteamento do gateway
+![Descrição da imagem](./print1-desafio5.png)
+![Descrição da imagem](./print2-desafio5.png)
+![Descrição da imagem](./print3-desafio5.png)
+![Descrição da imagem](./print4-desafio5.png)
