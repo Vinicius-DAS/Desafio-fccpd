@@ -69,8 +69,8 @@ Ambos os containers estão conectados na mesma **rede Docker customizada** chama
                 +--------------------------+
                 |        Host (PC)         |
                 |                          |
- Navegador /    |  http://localhost:8080   |
- curl           |          |               |
+                |  http://localhost:8080   |
+                |          |               |
                 |          v               |
                 |    [ Porta 8080 ]        |
                 +-----------|--------------+
@@ -198,12 +198,8 @@ Ambos os containers estão conectados na mesma **rede Docker customizada** chama
 
 
     # Saída esperada
-  ![Descrição da imagem](./desafio1-saida.jpeg)
+  ![Descrição da imagem](./print1-desafio1.png)
+  ![Descrição da imagem](./print2-desafio1.png)
 
-## Checklist para avaliação
-- ✅ Código funcionando: Dockerfiles e scripts prontos
-- ✅ README com instruções de execução e troubleshooting
-- ✅ Scripts de automação para setup, run e cleanup
-- ✅ Demonstração e prints para evidenciar o fluxo
 
 
