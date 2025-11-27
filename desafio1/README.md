@@ -3,7 +3,7 @@
 ## Objective
 
 This challenge aims to create **two Docker containers** that communicate with each other via a **custom Docker network**.
-The idea is to demonstrate, practically, how to:
+The idea is to demonstrate, in practice, how to:
 
 - create a named Docker network;
 - connect multiple containers to this network;
@@ -20,11 +20,11 @@ The solution consists of two containers:
   - Image based on `python:3.12-slim`.
 
 - **Client (`desafio1-client`)**
-  - Implemented in **shell script** running in a container based on `alpine`.
+  - Implemented in **shell script** running on an `alpine` based container.
   - Uses `curl` in an infinite loop to make periodic HTTP requests to the server.
-  - Every ~5 seconds it makes a request to `http://web:8080` and displays the response in the terminal (note that the server was initialized with the network-alias `web`).
+  - Every ~5 seconds, it makes a request to `http://web:8080` and displays the response in the terminal (note that the server was initialized with the network-alias `web`).
 
-Both containers are connected to the same **custom Docker network** named `desafio1-net`, which allows the client to access the server using the hostname `web`.
+Both containers are connected to the same **custom Docker network** called `desafio1-net`, allowing the client to access the server using the hostname `web`.
 
 ## Architecture and Flow
 
@@ -33,7 +33,7 @@ Both containers are connected to the same **custom Docker network** named `desaf
 - **Docker Network**
   - Name: `desafio1-net`
   - Type: bridge (internal network created by Docker)
-  - Function: allow `web` and `client` containers to resolve each other by name.
+  - Function: allows `web` and `client` containers to see each other by name.
 
 - **Container `web`**
   - Image: `desafio1-web`
@@ -44,7 +44,7 @@ Both containers are connected to the same **custom Docker network** named `desaf
 
     ```json
     {
-      "message": "Hello, I am the web server of Challenge 1",
+      "message": "Hello, I am the Challenge 1 web server",
       "timestamp": "2025-11-13T17:47:40.338887Z",
       "host": "c30c9f7dc15a"
     }
@@ -56,12 +56,11 @@ Both containers are connected to the same **custom Docker network** named `desaf
   - Behavior:
     - Prints a startup message.
     - Enters an infinite loop:
-      - runs `curl http://web:8080`;
+      - executes `curl http://web:8080`;
       - prints the response body (JSON);
       - waits 5 seconds and repeats.
 
-### Diagram (conceptual)
-
+### Diagram (Conceptual)
 
                 +--------------------------+
                 |        Host (PC)         |
@@ -76,9 +75,9 @@ Both containers are connected to the same **custom Docker network** named `desaf
                             |
                             v
                 +--------------------------+
-                |     Container "web"      |
+                |      Container "web"     |
                 |   Image: desafio1-web    |
-                |   Flask on 0.0.0.0:8080  |
+                |   Flask at 0.0.0.0:8080  |
                 +--------------------------+
                             ^
                             |
@@ -86,11 +85,10 @@ Both containers are connected to the same **custom Docker network** named `desaf
                             |
                             v
                 +--------------------------+
-                |    Container "client"    |
-                | Image: desafio1-client   |
-                | curl http://web:8080     |
+                |     Container "client"   |
+                |  Image: desafio1-client  |
+                |  curl http://web:8080    |
                 +--------------------------+
-
 
 ## Challenge 1 Folder Structure
 
@@ -111,11 +109,12 @@ Both containers are connected to the same **custom Docker network** named `desaf
     -client/Dockerfile
 
 ## Execution Step-by-Step
-    Docker installed and running.
+
+    Prerequisites: Docker installed and running.
 
     Terminal (PowerShell / CMD / WSL).
 
-    All commands below assume you are at the root of the repository.
+    All commands below assume you are in the repository root.
 
       C:\Users\...> cd C:\Users\...\Desafios-FCCPD
 
@@ -131,22 +130,22 @@ Both containers are connected to the same **custom Docker network** named `desaf
     2) client
         cd ../client
         docker build -t desafio1-client .
-    
+
     # Start the web server
       docker run -d --name desafio1-web --network desafio1-net -p 8080:8080 desafio1-web
 
-    # Verify if the container is running (Optional)
+    # Check if the container is running (Optional)
         docker ps
 
     # Test server from host
         curl http://localhost:8080 | Select-Object -Expand Content
 
-    This is the command I used because you only see the JSON; if you use just "curl http://localhost:8080", the terminal gets cluttered.
+    Note: I used the command above because it displays clean JSON. Using just "curl http://localhost:8080" might pollute the terminal.
 
-    # Start the client that makes requests in a loop
+    # Start the client (makes requests in a loop)
       docker run --name desafio1-client --network desafio1-net desafio1-client
 
-  ## Quick Execution (Automated)
+  ## Fast Execution (Automated)
 
     # 1) Quick start (one-line)
     cd desafio1 && bash setup.sh && bash run.sh && bash test.sh

@@ -1,66 +1,66 @@
-# Desafio 3 — Docker Compose Orquestrando Serviços
+# Challenge 3 — Docker Compose Orchestrating Services
 
-## Objetivo
+## Objective
 
-Usar **Docker Compose** para orquestrar uma aplicação composta por **3 serviços**:
+Use **Docker Compose** to orchestrate an application composed of **3 services**:
 
-- `web`: aplicação Flask que expõe uma API HTTP.
-- `db`: banco de dados PostgreSQL.
-- `cache`: serviço de cache Redis.
+- `web`: Flask application that exposes an HTTP API.
+- `db`: PostgreSQL database.
+- `cache`: Redis cache service.
 
-A aplicação web se comunica com o banco e com o cache via rede interna criada pelo Compose.
+The web application communicates with the database and cache via an internal network created by Compose.
 
 
-## Arquitetura
+## Architecture
 
-### Serviços
+### Services
 
 - **web (desafio3-web)**
-  - Imagem construída a partir de `web/Dockerfile`.
-  - Porta exposta: `5000` (mapeada para `8000` no host).
-  - Tecnologias: Python, Flask, psycopg2, Redis.
-  - Lê variáveis de ambiente (`DB_HOST`, `DB_USER`, etc.) definidas no `docker-compose.yml`.
-  - Funções principais:
-    - Cria tabela `visitas` no Postgres (se não existir).
-    - Insere um novo registro a cada requisição.
-    - Conta quantos registros existem.
-    - Incrementa um contador de visitas no Redis (`visitas_home`).
+  - Image built from `web/Dockerfile`.
+  - Exposed port: `5000` (mapped to `8000` on the host).
+  - Technologies: Python, Flask, psycopg2, Redis.
+  - Reads environment variables (`DB_HOST`, `DB_USER`, etc.) defined in `docker-compose.yml`.
+  - Main functions:
+    - Creates `visitas` table in Postgres (if it doesn't exist).
+    - Inserts a new record on each request.
+    - Counts how many records exist.
+    - Increments a visit counter in Redis (`visitas_home`).
 
 - **db (desafio3-db)**
-  - Imagem: `postgres:16`.
-  - Variáveis de ambiente:
+  - Image: `postgres:16`.
+  - Environment variables:
     - `POSTGRES_USER=usuario`
     - `POSTGRES_PASSWORD=senha123`
     - `POSTGRES_DB=desafio3db`
-  - Usa o volume nomeado `db-data` para persistir os dados.
-  - Acessado pelo hostname `db` dentro da rede `desafio3-net`.
+  - Uses the named volume `db-data` to persist data.
+  - Accessed by hostname `db` within the `desafio3-net` network.
 
 - **cache (desafio3-cache)**
-  - Imagem: `redis:7`.
-  - Acessado pelo hostname `cache`.
-  - Armazena o contador de visitas em memória.
+  - Image: `redis:7`.
+  - Accessed by hostname `cache`.
+  - Stores the visit counter in memory.
 
-### Rede e Volumes
+### Network and Volumes
 
-- Rede interna: `desafio3-net`
-  - Criada automaticamente pelo Compose.
-  - Todos os três serviços estão conectados nela.
-  - Permite que o `web` acesse `db` e `cache` pelos hostnames.
+- Internal network: `desafio3-net`
+  - Created automatically by Compose.
+  - All three services are connected to it.
+  - Allows `web` to access `db` and `cache` by hostnames.
 
 - Volume: `db-data`
-  - Armazena os dados do PostgreSQL.
-  - Declarado em `volumes:` no `docker-compose.yml`.
+  - Stores PostgreSQL data.
+  - Declared in `volumes:` in `docker-compose.yml`.
 
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 desafio3/
 ├── docker-compose.yml
-├── setup.sh          # Inicia a stack com Docker Compose
-├── test.sh           # Testa endpoints da aplicação
-├── reset-db.sh       # Remove volume e recria o banco limpo
-├── cleanup.sh        # Para e remove os serviços
+├── setup.sh          # Starts the stack with Docker Compose
+├── test.sh           # Tests application endpoints
+├── reset-db.sh       # Removes volume and recreates clean database
+├── cleanup.sh        # Stops and removes services
 └── web/
     ├── Dockerfile
     ├── requirements.txt
@@ -68,7 +68,7 @@ desafio3/
 ```
 
 
-## Execução Rápida (Automática)
+## Quick Execution (Automated)
 
   # 1) Quick start (one-line)
   cd desafio3 && bash setup.sh && bash test.sh
@@ -77,12 +77,12 @@ desafio3/
   bash setup.sh
   bash test.sh
 
-    # 3) Simular falha do DB (verificar fallback/status)
+    # 3) Simulate DB failure (check fallback/status)
     bash simulate_db_down.sh
-    # 4) Reset do banco de dados (apaga volume db-data)
+    # 4) Reset database (deletes db-data volume)
     bash reset-db.sh
 
-    # 4) Limpar toda a stack
+    # 4) Clean up entire stack
     bash cleanup.sh
 
   ## Verify (expected result)
@@ -100,59 +100,59 @@ desafio3/
   ```
   Expect successful ping responses.
 
-## Passo a passo de execução (Manual)
+## Step-by-Step Execution (Manual)
 
-    1) Subir serviços
+    1) Start services
       docker compose up -d --build
-    1.1) (Opcional) verificação
+    1.1) (Optional) verification
       docker compose ps
 
-    2) Acessar aplicação
+    2) Access application
       curl http://localhost:8000 | Select-Object -Expand Content
 
-    3) Teste de comunicação
+    3) Communication test
       docker compose exec web ping -c 2 db
       docker compose exec web ping -c 2 cache
 
     #Prints
 
-![Descrição da imagem](./print1-desafio3.png)
-![Descrição da imagem](./print2-desafio3.png)
+![Image description](./print1-desafio3.png)
+![Image description](./print2-desafio3.png)
 
-## Checklist para avaliação
-- ✅ Código funcionando: `docker-compose.yml` e `web/Dockerfile` prontos
-- ✅ README com instruções e scripts: `setup.sh`, `test.sh`, `reset-db.sh`, `cleanup.sh`
-- ✅ Testes básicos automatizados integram os serviços (`bash test.sh`)
-- ✅ Troubleshooting adicionado para problemas comuns (ports, volumes)
+## Evaluation Checklist
+- ✅ Working code: `docker-compose.yml` and `web/Dockerfile` ready
+- ✅ README with instructions and scripts: `setup.sh`, `test.sh`, `reset-db.sh`, `cleanup.sh`
+- ✅ Automated basic tests integrate services (`bash test.sh`)
+- ✅ Troubleshooting added for common issues (ports, volumes)
 
 ## Troubleshooting
 
-### Erro: "bind: address already in use"
-Se a porta 8000 já estiver ocupada, use outra porta ao iniciar o Compose:
+### Error: "bind: address already in use"
+If port 8000 is already in use, use another port when starting Compose:
 ```bash
 docker compose down
-# Defina a variável de ambiente ou edite o compose para usar 8001:5000
+# Set the environment variable or edit the compose to use 8001:5000
 docker compose up -d --build
 ```
 
-### Erro: "volume is in use" ao remover volume
-Certifique-se que os serviços foram parados antes de remover volume:
+### Error: "volume is in use" when removing volume
+Make sure services are stopped before removing the volume:
 ```bash
 docker compose down
 docker volume rm db-data
 ```
 
-### Web não conecta ao Postgres
-1. Verifique se as variáveis de ambiente em `docker-compose.yml` estão corretas (DB_HOST=db)
-2. Acesse o container web e rode pings:
+### Web cannot connect to Postgres
+1. Check if environment variables in `docker-compose.yml` are correct (DB_HOST=db)
+2. Access the web container and run pings:
 ```bash
 docker compose exec web ping -c 3 db
 docker compose exec web bash -c "psql -h db -U usuario -d desafio3db -c '\dt'" || true
 ```
 
-## Conceitos-Chave
+## Key Concepts
 
-- Docker Compose cria redes por padrão, portanto os serviços se comunicam por hostname.
-- Volumes persistem dados do Postgres enquanto existir o volume `db-data`.
+- Docker Compose creates networks by default, so services communicate by hostname.
+- Volumes persist Postgres data as long as the `db-data` volume exists.
 
-- Use `docker compose down -v` para remover volumes com cuidado.
+- Use `docker compose down -v` to remove volumes with caution.

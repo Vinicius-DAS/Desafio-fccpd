@@ -1,18 +1,18 @@
-# Desafios-FCCPD
+# Challenges-FCCPD
 
-## Prerequisitos
+## Prerequisites
 
-- Docker instalado (recomendado 20.x+)
-- Docker Compose (ou `docker compose` integrado) — recomendado versão 2.x+
-- Git (opcional para clonar o repo)
-- Bash (scripts de automação usam bash)
-- Python 3 (para os scripts de teste que formatam JSON com `python3 -m json.tool`)
+- Docker installed (recommended 20.x+)
+- Docker Compose (or integrated `docker compose`) — recommended version 2.x+
+- Git (optional for cloning the repo)
+- Bash (automation scripts use bash)
+- Python 3 (for test scripts that format JSON with `python3 -m json.tool`)
 
   ## Quick run matrix 
 
-  Below are the single-line commands that run the main demo for each desafio (recommended to run from the repo root):
+  Below are the single-line commands that run the main demo for each challenge (recommended to run from the repo root):
 
-  | Desafio | Run command | Expected outcome |
+  | Challenge | Run command | Expected outcome |
   |---|---|---|
   | `desafio1` | `cd desafio1 && bash setup.sh && bash run.sh && bash test.sh` | Web endpoint at http://localhost:8080 returns JSON, client logs show requests |
   | `desafio2` | `cd desafio2 && bash setup.sh && bash demo.sh && bash persist.sh` | Postgres container starts, table `clientes` with 3 records; after `persist.sh` the same data remains |

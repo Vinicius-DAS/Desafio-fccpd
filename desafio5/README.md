@@ -1,42 +1,42 @@
-# Desafio 5 — Microsserviços com API Gateway
+# Challenge 5 — Microservices with API Gateway
 
-## Objetivo
+## Objective
 
-Criar uma arquitetura com **API Gateway** centralizando o acesso a dois microsserviços:
+Create an architecture with **API Gateway** centralizing access to two microservices:
 
-- **Users Service**: fornece dados de usuários.
-- **Orders Service**: fornece dados de pedidos.
-- **Gateway**: expõe os endpoints `/users` e `/orders` e orquestra as chamadas para os dois serviços.
+- **Users Service**: provides user data.
+- **Orders Service**: provides order data.
+- **Gateway**: exposes `/users` and `/orders` endpoints and orchestrates calls to both services.
 
-Todos os serviços são executados em containers Docker, orquestrados via `docker-compose`.
+All services run in Docker containers, orchestrated via `docker-compose`.
 
 
 
-## Arquitetura
+## Architecture
 
-- `users-service` (porta interna 5000)
-  - `GET /users` → lista de usuários em JSON.
-- `orders-service` (porta interna 5000)
-  - `GET /orders` → lista de pedidos em JSON.
-- `gateway` (porta interna 5000, exposta como 8080 no host)
-  - `GET /users` → chama `users-service` via HTTP, devolve resposta agregada.
-  - `GET /orders` → chama `orders-service` via HTTP.
-  - Usa variáveis de ambiente:
+- `users-service` (internal port 5000)
+  - `GET /users` → list of users in JSON.
+- `orders-service` (internal port 5000)
+  - `GET /orders` → list of orders in JSON.
+- `gateway` (internal port 5000, exposed as 8080 on host)
+  - `GET /users` → calls `users-service` via HTTP, returns aggregated response.
+  - `GET /orders` → calls `orders-service` via HTTP.
+  - Uses environment variables:
     - `USERS_SERVICE_URL`
     - `ORDERS_SERVICE_URL`
-  - Ponto único de entrada para o consumidor externo: `http://localhost:8080`.
+  - Single entry point for external consumer: `http://localhost:8080`.
 
-Rede:
+Network:
 
-- Rede interna `desafio5-net`, criada pelo Compose.
-- Os serviços se enxergam pelos hostnames:
+- Internal network `desafio5-net`, created by Compose.
+- Services see each other by hostnames:
   - `users-service`
   - `orders-service`
   - `gateway`
 
 
 
-## Execução Rápida (Automatizada)
+## Quick Execution (Automated)
 
   # 1) Quick start (one-line)
   cd desafio5 && bash setup.sh && bash test.sh
@@ -44,13 +44,13 @@ Rede:
   # 2) Setup step-by-step
   bash setup.sh
 
-  # 2) Testar endpoints via gateway
+  # 2) Test endpoints via gateway
   bash test.sh
 
-  # 3) Simular falha do users-service
+  # 3) Simulate users-service failure
   bash simulate_gateway_failure.sh
 
-  # 4) Parar e limpar
+  # 4) Stop and clean up
   bash cleanup.sh
 
 ## Verify (expected result)
@@ -69,54 +69,55 @@ docker compose exec orders-service curl -s http://localhost:5000/orders
 ```
 Expect the original raw JSON returned by each service.
 
-## ▶️ Como executar (Manual)
-    Para rodar, voce deve estar na pasta do desafio 5
+## ▶️ How to execute (Manual)
+    To run, you must be in the desafio5 folder
 
-    1) Criar 
+    1) Create
       docker compose up -d --build
 
-    2) Mostrar como esta
+    2) Show status
       docker compose ps
     
-    3) Testar users
+    3) Test users
       curl http://localhost:8080/users | Select-Object -Expand Content
     
-    3.1) Testar orders
+    3.1) Test orders
       curl http://localhost:8080/orders | Select-Object -Expand Content
 
-    3.2) testar users-service
+    3.2) Test users-service
       docker compose exec users-service curl -s http://localhost:5000/users
     
-    3.3) Testar orders-service
+    3.3) Test orders-service
+      docker compose exec orders-service curl -s http://localhost:5000/orders
 
-  ## Como o Gateway faz o roteamento
+  ## How the Gateway routes
 
-  O `gateway` recebe as requisições externas e encaminha internamente:
+  The `gateway` receives external requests and forwards them internally:
 
-  - `GET /users` → proxy para `users-service` (http://users-service:5000/users)
-  - `GET /orders` → proxy para `orders-service` (http://orders-service:5000/orders)
+  - `GET /users` → proxy to `users-service` (http://users-service:5000/users)
+  - `GET /orders` → proxy to `orders-service` (http://orders-service:5000/orders)
 
-  As URLs de backend podem ser configuradas via variáveis de ambiente (`USERS_SERVICE_URL`, `ORDERS_SERVICE_URL`) definidas no `docker-compose.yml`.
+  Backend URLs can be configured via environment variables (`USERS_SERVICE_URL`, `ORDERS_SERVICE_URL`) defined in `docker-compose.yml`.
 
   ## Troubleshooting
 
-  ### Erro: Gateway retorna erro 502/504
-  Verifique se o `users-service`/`orders-service` estão crescendo:
+  ### Error: Gateway returns 502/504 error
+  Check if `users-service`/`orders-service` are running:
   ```bash
   docker compose ps
   docker compose logs -f gateway
   ```
 
-  ### Erro: Porta 8080 já em uso
-  Altere o mapeamento no `docker-compose.yml` ou pare o processo que está usando 8080.
+  ### Error: Port 8080 already in use
+  Change the mapping in `docker-compose.yml` or stop the process using port 8080.
 
   ### CORS / Timeouts
-  Se o gateway retorna tempo limite, verifique os logs do serviço backend e aumente o timeout no gateway (se aplicável).
+  If the gateway returns timeout, check backend service logs and increase the timeout in the gateway (if applicable).
       docker compose exec orders-service curl -s http://localhost:5000/orders
 
 # Prints
 
-![Descrição da imagem](./print1-desafio5.png)
-![Descrição da imagem](./print2-desafio5.png)
-![Descrição da imagem](./print3-desafio5.png)
-![Descrição da imagem](./print4-desafio5.png)
+![Image description](./print1-desafio5.png)
+![Image description](./print2-desafio5.png)
+![Image description](./print3-desafio5.png)
+![Image description](./print4-desafio5.png)

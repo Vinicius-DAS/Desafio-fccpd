@@ -1,20 +1,20 @@
-# Desafio 4 — Microsserviços Independentes
+# Challenge 4 — Independent Microservices
 
-## Objetivo
+## Objective
 
-Criar **dois microsserviços independentes** que se comunicam via HTTP:
+Create **two independent microservices** that communicate via HTTP:
 
-- **Microsserviço A (service-a)**: expõe uma lista de usuários em JSON.
-- **Microsserviço B (service-b)**: consome o serviço A, combina as informações e devolve um “relatório” com frases do tipo  
-  `“Usuário X ativo desde Y”`.
+- **Microservice A (service-a)**: exposes a list of users in JSON.
+- **Microservice B (service-b)**: consumes service A, combines the information and returns a "report" with sentences like  
+  `"User X active since Y"`.
 
-Cada microsserviço roda em um **container Docker separado**, com seu próprio Dockerfile, e a comunicação acontece via HTTP usando uma **rede Docker customizada (`desafio4-net`)**.
+Each microservice runs in a **separate Docker container**, with its own Dockerfile, and communication happens via HTTP using a **custom Docker network (`desafio4-net`)**.
 
 
 
-## Arquitetura da Solução
+## Solution Architecture
 
-### Visão Geral
+### Overview
 
 - **service-a**
   - Framework: Flask (Python).
@@ -27,40 +27,40 @@ Cada microsserviço roda em um **container Docker separado**, com seu próprio D
       {"id": 3, "name": "João",    "active_since": "2021-05-15"}
     ]
     ```
-  - Endpoint de saúde: `GET /health` → `{"status": "ok"}`
+  - Health endpoint: `GET /health` → `{"status": "ok"}`
 
 - **service-b**
   - Framework: Flask (Python) + `requests`.
-  - Endpoint principal: `GET /report`
-    - Chama o microsserviço A via HTTP.
-    - Lê o JSON de `/users`.
-    - Monta frases como:
+  - Main endpoint: `GET /report`
+    - Calls microservice A via HTTP.
+    - Reads the JSON from `/users`.
+    - Builds sentences like:
       ```text
-      "Usuário Gabriel ativo desde 2023-01-10"
+      "User Gabriel active since 2023-01-10"
       ```
-    - Retorna um JSON como:
+    - Returns a JSON like:
       ```json
       {
         "source": "http://service-a:5000/users",
         "total_users": 3,
         "messages": [
-          "Usuário Gabriel ativo desde 2023-01-10",
-          "Usuário Maria ativo desde 2022-09-02",
-          "Usuário João ativo desde 2021-05-15"
+          "User Gabriel active since 2023-01-10",
+          "User Maria active since 2022-09-02",
+          "User João active since 2021-05-15"
         ]
       }
       ```
-  - Endpoint de saúde: `GET /health` → `{"status": "ok"}`
-  - A URL do serviço A é configurada via variável de ambiente `USERS_API_URL`.
+  - Health endpoint: `GET /health` → `{"status": "ok"}`
+  - Service A URL is configured via environment variable `USERS_API_URL`.
 
-### Rede Docker
+### Docker Network
 
-- Rede: **`desafio4-net`**
-  - Criada manualmente com `docker network create`.
-  - Conecta os containers `service-a` e `service-b`.
-  - Dentro da rede, o `service-b` acessa o `service-a` pelo hostname `service-a` na porta `5000`.
+- Network: **`desafio4-net`**
+  - Created manually with `docker network create`.
+  - Connects `service-a` and `service-b` containers.
+  - Within the network, `service-b` accesses `service-a` by hostname `service-a` on port `5000`.
 
-### Esquema (conceitual)
+### Diagram (conceptual)
 
 
                +---------------------------+
@@ -70,16 +70,16 @@ Cada microsserviço roda em um **container Docker separado**, com seu próprio D
                |  http://localhost:5002   --> service-b (/report)
                +---------------------------+
 
-                 (rede Docker: desafio4-net)
+                 (Docker network: desafio4-net)
                           |
-          +---------------+---------------+
+          +---------------+---------------+ 
           |                               |
      +-------------+                 +-------------+
      |  service-a  |  <--- HTTP ---  |  service-b  |
      | Flask /users|                 | Flask/report|
      +-------------+                 +-------------+
 
-## Estrutura de Pastas
+## Folder Structure
 ```
 desafio4/
 ├── service-a/
@@ -92,24 +92,24 @@ desafio4/
 │   └── Dockerfile
 ```
 
-## Execução Rápida (Automatizada)
+## Quick Execution (Automated)
 
   # 1) Quick start (one-line)
   cd desafio4 && bash setup.sh && bash run.sh && bash test.sh
 
-  # 2) Setup (separado)
+  # 2) Setup (separated)
   bash setup.sh
 
-  # 2) Iniciar microsserviços
+  # 2) Start microservices
   bash run.sh
 
-  # 3) Testar automaticamente
+  # 3) Test automatically
   bash test.sh
 
-  # 4) Simular falha do service-a
+  # 4) Simulate service-a failure
   bash simulate_failure.sh
 
-  # 5) Limpar tudo
+  # 5) Clean up everything
   bash cleanup.sh
 
 ## Verify (expected result)
@@ -124,64 +124,64 @@ Expect JSON list of users (id, name, active_since).
 ```bash
 curl http://localhost:5002/report
 ```
-Expect JSON with `source`, `total_users` and an array of `messages` with sentences like "Usuário Gabriel ativo desde 2023-01-10".
+Expect JSON with `source`, `total_users` and an array of `messages` with sentences like "User Gabriel active since 2023-01-10".
 
-## Como executar (manual)
-    Todos os comandos abaixo são executados a partir da pasta desafio4
+## How to execute (manual)
+    All commands below are executed from the desafio4 folder
 
-    1) Criar a rede Docker
+    1) Create Docker network
       docker network create desafio4-net
 
-    2) Build de imagens
+    2) Build images
     2.1) service-a
         docker build -t desafio4-service-a ./service-a
     2.2) service-b
         docker build -t desafio4-service-b ./service-b
 
-    3) Subir o Microsserviço A
+    3) Start Microservice A
         docker run -d --name service-a --network desafio4-net -p 5003:5000 desafio4-service-a
 
-    3.2) Subir o Microsserviço B
+    3.2) Start Microservice B
         docker run -d --name service-b --network desafio4-net -p 5002:5000 -e USERS_API_URL=http://service-a:5000/users desafio4-service-b
 
-    4) Verifica se os containers estao de pe
+    4) Check if containers are running
         docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-    5) Testar microsserviço A
+    5) Test microservice A
         curl http://localhost:5003/users
-    5.1) Testar o B
+    5.1) Test B
       curl http://localhost:5002/report
 
   ## Troubleshooting
 
-  ### Service B falha ao consumir A
-  Se o `service-b` não conseguir alcançar `service-a`, verifique:
-  - Se ambos os containers estão na mesma rede `desafio4-net`.
-  - Se a variável `USERS_API_URL` está corretamente apontando para `http://service-a:5000/users`.
-  Verifique logs:
+  ### Service B fails to consume A
+  If `service-b` cannot reach `service-a`, check:
+  - If both containers are on the same network `desafio4-net`.
+  - If the `USERS_API_URL` variable is correctly pointing to `http://service-a:5000/users`.
+  Check logs:
   ```bash
   docker logs -f desafio4-service-b
   ```
 
-  ### Porta ocupada
-  Se `5003` ou `5002` estiver ocupado no host, use outra porta de mapeamento no `docker run`.
+  ### Port occupied
+  If `5003` or `5002` is occupied on the host, use another port mapping in `docker run`.
 
-  ### Verificando a disponibilidade
-  Para testar se `service-a` está respondendo:
+  ### Checking availability
+  To test if `service-a` is responding:
   ```bash
   curl http://localhost:5003/users
   ```
 
-  Para testar `service-b`:
+  To test `service-b`:
   ```bash
   curl http://localhost:5002/report
   ``` 
 
 # Prints
 
-![Descrição da imagem](./print1-desafio4.png)
-![Descrição da imagem](./print2-desafio4.png)
-![Descrição da imagem](./print3-desafio4.png)
+![Image description](./print1-desafio4.png)
+![Image description](./print2-desafio4.png)
+![Image description](./print3-desafio4.png)
 
 
 
